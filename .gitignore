@@ -2,8 +2,7 @@
 .Rhistory
 .RData
 .Ruserdata
-docs/
 *files$/
-publish.sh
+*.sh
 fakeout/
 resources/

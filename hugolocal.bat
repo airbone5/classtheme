@@ -1,2 +1,2 @@
 set EDITURL=%cd%
-hugo server -D --navigateToChanged
+hugo server -D --navigateToChanged --watch --disableFastRender
