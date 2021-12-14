@@ -18,9 +18,9 @@
 
 <script>
   {{ with .Site.Params.searchroot }}
-    let idxfile = "{{ (printf "%sindex.json" .)| relURL }}"  
+    let idxfile = "{{ (printf "%sindex.json" .)| absURL }}"  
   {{ else}}
-   let idxfile = "{{ "index.json"| relURL }}"  
+   let idxfile = "{{ "index.json"| absURL }}"  
   {{ end }}
 </script>
 <script src='{{"js/localsearch.js" | relURL}}{{ if $assetBusting }}?{{ now.Unix }}{{ end }}'></script>

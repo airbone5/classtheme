@@ -108,11 +108,7 @@ function htmlUnescape(str){
     //re = /(<!--html_preserve-->)((\s|\S)*?)(?:^\1|<!--\/html_preserve-->)/g;
     //re = /(&lt;!--html_preserve--&gt;)((\s|\S)*?)(?:^\1|&lt;!--\/html_preserve--&gt;)/g
     //上面兩個都要
-    
-    //re = /((&lt;|<)!--html_preserve--(&gt;|>))((\s|\S)*?)(?:^\1|(&lt;|<)!--\/html_preserve--(&gt;|>))/g; 
-    //因為shiny不知道為甚麼&lt;會被翻譯成&amp;lt;，改成
-    re = /((&(amp;)?lt;|<)!--html_preserve--(&(amp;)?gt;|>))((\s|\S)*?)(?:^\1|(&(amp;)?lt;|<)!--\/html_preserve--(&(amp;)?gt;|>))/g; 
-    str=str.replace(/&amp;/g,"&")    
+    re = /((&lt;|<)!--html_preserve--(&gt;|>))((\s|\S)*?)(?:^\1|(&lt;|<)!--\/html_preserve--(&gt;|>))/g; 
     str=str.replace(re,(m)=>unescapeHtmlChunk(m))
     return( str);
     
@@ -221,49 +217,13 @@ function hugo_unescape(str){
  return(rst)
  
 }
-//shiny 的完成是這個
-//$( document ).on("shiny:sessioninitialized", function(event) {
 
 document.addEventListener('DOMContentLoaded', (event) => {
   //這個函數的功能有2
   // 1) 處理pre 區塊屬性,利用分解問號達成
   // 2) 打光
   //var list = document.querySelectorAll("pre code");
-
-  var list = document.querySelectorAll("pre");
-  for (let i = 0; i < list.length; i++) {
-    let parent = list[i];
-    codenode = list[i].querySelector("code")
-    
-    let mm= /(.*?)(\?.*?=.*)/ 
-    //if(!parent || !mm.test(codenode.className))
-    if(!parent || !codenode ||  !mm.test(codenode.className))
-      continue;
-    
-    
-    matches=Array.from(codenode.className.match(mm))
-    let obj = parseParameter(matches[2]);
-    
-    codenode.className = obj["lang"]?"language-"+obj["lang"]: matches[1];
-    if ( obj["preclass"]) {
-        obj["preclass"].split(".").forEach(ee =>{
-           if (ee.length>0){
-            parent.classList.add(ee);
-           }
-        }) 
-    }  
-    
-    if (obj["class"]) {
-      obj["class"].split(".").forEach(ee =>{
-        if (ee.length>0){
-         //parent.classList.add(ee);    //原先放在PRE
-         codenode.classList.add(ee)
-        }
-     }) 
-    }
-  }
   
- /* 
   var list = document.querySelectorAll("pre:not(.chroma) code");
   for (let i = 0; i < list.length; i++) {
     codenode = list[i]
@@ -294,18 +254,20 @@ document.addEventListener('DOMContentLoaded', (event) => {
      }) 
     }
   }
-*/
-// hljs v10.4.1
+
+/*  
+prechunks=Array.from(document.querySelectorAll("pre code:not(.language-html)"));
+  prechunks= prechunks.filter(e=> !e.classList.contains("language-.html"))
+  */  
   prechunks=Array.from(document.querySelectorAll("pre:not(.no-hugo-post)"));
   prechunks.forEach(apre=>{
     {
       precode = apre.querySelector("code")
       //s=hugo_unescape(precode.innerHTML) //v1 pair 
-      if(precode){
-        s=htmlUnescape(precode.innerHTML)
-        s=s.replace(RegExp("\\n?hugocmd.*?\\n\#(>|&gt;)","gm"),"") //殺掉指令hugocmd,有需要這個嗎?stata不需要,因為hugocmd不會出現
-        precode.innerHTML=s
-      }
+      s=htmlUnescape(precode.innerHTML)
+      s=s.replace(RegExp("\\n?hugocmd.*?\\n\#(>|&gt;)","gm"),"") //殺掉指令hugocmd,有需要這個嗎?stata不需要,因為hugocmd不會出現
+      
+      precode.innerHTML=s
     }    
   });
   
@@ -313,48 +275,12 @@ document.addEventListener('DOMContentLoaded', (event) => {
   document.querySelectorAll('pre:not(.chroma) code').forEach((el) => {
     hljs.highlightBlock(el);
   });
-//----------------end   of   hljs v10.4.1 
- 
-/*-------------------------
-//hljs v11
-prechunks=Array.from(document.querySelectorAll("pre code:not([class*='hljs']"));
-prechunks.forEach(el=>{
-  {    
-    el.innerHTML=shljs(el)
-    el.classList.add("hljs")
-  }    
-});
-*/
+
   var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
   var tooltipList = tooltipTriggerList.map(function (e) {
     return new bootstrap.Tooltip(e)
   })
-
+  
   //附件的位置加入TOC
   stataPosix();
 });
-
-//v11 fail
-function shljs(cnode){
-  let map = {amp: '&', lt: '<', gt: '>', quot: '"', '#039': "'"}
-  re = /((&lt;|<)!--html_preserve--(&gt;|>))((\s|\S)*?)(?:^\1|(&lt;|<)!--\/html_preserve--(&gt;|>))/g; 
-  
-  str = cnode.innerHTML;  //本來應該是str=cnode.textContent;
-  lang=/\blang(?:uage)?-([\w-]+)\b/i.exec(cnode.className);
-  if(!lang) 
-    lang="r" 
-  else 
-    lang=lang[1];
-  idx=0;
-  fmt="";
-  while ((ary = re.exec(str)) !== null) {
-    ctext=unescapeHtmlChunk(str.slice(idx,ary.index))
-    rtext=str.slice(ary.index,ary.index+ary[0].length)
-    fmt=fmt+hljs.highlight(ctext,{language:lang}).value+rtext.replaceAll(/&([^;]+);/g, (m, c) => map[c])
-    idx=re.lastIndex;
-    
-}  
-if (fmt=="")
- fmt=hljs.highlight(str,{language:lang}).value;
-return(fmt)
-}

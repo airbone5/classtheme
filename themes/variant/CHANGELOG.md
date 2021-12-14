@@ -1,7 +1,6 @@
 # Changelog
 
-## v0.0.1 (2021/12/07)
-上課用
+## v0.0.1 (2021/05/30)
 
-- 刪除有關R相關的函數
-- 短碼也刪了一些
+#### New features
+1. themes.css about  notice tip warning note info changed.
