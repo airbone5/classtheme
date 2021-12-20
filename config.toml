@@ -1,9 +1,8 @@
 theme = "variant"  
-baseURL = "/"
-#baseURL = "https://airbone4.github.io/class_web" #https://xxx.github.io/xxx
+baseURL = "https://airbone4.github.io/"   #⭕
 pygmentsUseClasses = true
 languageCode = "en-us"
-title = "Learn Javascript"
+title = "Learn Javascript"  #⭕
 relativeurls = true
 publishDir = "docs"
 author = "lendjwjcen"
@@ -14,7 +13,7 @@ ignoreErrors = ["error-remote-getjson"]
 
 #------------------------------------
 uglyurls = true
-enableEmoji = true  
+
   # 和搜尋有關
 [outputs]
  home = [ "HTML", "RSS", "JSON"]
@@ -47,7 +46,7 @@ enableEmoji = true
  
 
 [params]
-  email = "xxx@nkust.edu.tw"
+  email = "xxx@nkust.edu.tw"  #⭕
   # extratheme
   nomath = false
   
@@ -55,8 +54,8 @@ enableEmoji = true
   #---------------------------------
   # 編輯檔案內定附檔名
   editext = "md"    
-  author = "len djwj cen"
-  description = "Javascript primer"
+  author = "len djwj cen"  #⭕
+  description = "Javascript primer"   #⭕
    
   disableAssetsBusting = false
   

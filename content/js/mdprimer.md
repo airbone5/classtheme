@@ -21,3 +21,7 @@ inroduction of markdown
 1. first
 1. second
 1. third
+
+{{< notice type="info" class="" >}}
+注意一下,因為是在md中寫javascript 為了避免被翻譯成HTML,盡量避免前面有空格,或有空行
+{{< /notice >}}
